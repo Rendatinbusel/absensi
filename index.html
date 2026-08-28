@@ -22,11 +22,26 @@
       h2 { text-align: center; color: #1f2937; font-weight: 600; margin-top: 0; margin-bottom: 25px; font-size: 22px; }
       .input-group { margin-bottom: 20px; }
       label { display: block; font-size: 14px; font-weight: 500; color: #4b5563; margin-bottom: 8px; }
+      
       input[type="text"], input[type="number"] { 
         width: 100%; padding: 12px 15px; border: 1.5px solid #d1d5db; border-radius: 10px; 
         font-size: 14px; font-family: 'Poppins', sans-serif; box-sizing: border-box; background-color: #f9fafb;
       }
       input:focus { border-color: #4f46e5; outline: none; background-color: #fff; box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15); }
+      
+      /* --- KODE BARU: Menghilangkan panah (spinner) pada input number --- */
+      /* Untuk Chrome, Safari, Edge, Opera */
+      input::-webkit-outer-spin-button,
+      input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+      }
+      /* Untuk Firefox */
+      input[type=number] {
+        -moz-appearance: textfield;
+      }
+      /* ----------------------------------------------------------------- */
+
       .file-upload-wrapper { position: relative; width: 100%; height: 60px; }
       .file-upload-wrapper input[type="file"] { position: absolute; left: 0; top: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; z-index: 2; }
       .custom-file-btn { 
@@ -53,13 +68,15 @@
       <h2>Absensi Pegawai</h2>
       
       <form id="formAbsen" onsubmit="kirimData(event)">
+        <!-- Atribut "required" memastikan form tidak bisa dikirim jika kosong -->
         <div class="input-group">
           <label>Nama Lengkap</label>
           <input type="text" id="nama" placeholder="Masukkan nama..." required>
         </div>
         <div class="input-group">
           <label>NIP</label>
-          <input type="number" id="nip" placeholder="Masukkan NIP..." required>
+          <!-- Menggunakan inputmode="numeric" agar di HP langsung muncul keyboard angka -->
+          <input type="number" id="nip" placeholder="Masukkan NIP..." inputmode="numeric" required>
         </div>
         <div class="input-group">
           <label>Jabatan</label>
@@ -83,14 +100,18 @@
     </div>
 
     <script>
-      // 🛑 PENTING 2: Masukkan URL Web App dari Apps Script Anda di sini!
+      // 🛑 PENTING: GANTI URL DI BAWAH INI DENGAN URL WEB APP ANDA
       const scriptURL = 'https://script.google.com/macros/s/AKfycbzQVKzVDrQWKeqKF6_C8YEc3SpFRok6025IzssOcrNoJJkSAAC-Urg0h53huFSTa20b/exec';
 
       function ubahTeksFoto(input) {
         var teksTombol = document.getElementById('teks-tombol-foto');
+        // Pengecekan ekstra: Jika user membatalkan pilih foto (empty)
         if (input.files && input.files[0]) {
           teksTombol.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg><span style="color:#10b981;">Foto Siap!</span>`;
           teksTombol.style.borderColor = "#10b981"; teksTombol.style.backgroundColor = "#ecfdf5";
+        } else {
+          teksTombol.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg><span style="color:#4b5563;">Ketuk untuk foto</span>`;
+          teksTombol.style.borderColor = "#9ca3af"; teksTombol.style.backgroundColor = "#f3f4f6";
         }
       }
 
@@ -111,9 +132,16 @@
 
       function kirimData(event) {
         event.preventDefault();
+        
+        // Memastikan foto benar-benar ada (Double Validation)
+        var fileFoto = document.getElementById("foto").files[0];
+        if (!fileFoto) {
+          alert("Silakan unggah swafoto terlebih dahulu!");
+          return;
+        }
+
         var tombol = document.getElementById("tombol");
         var pesan = document.getElementById("pesan");
-        var fileFoto = document.getElementById("foto").files[0];
         
         tombol.disabled = true; tombol.innerText = "Merekam Kehadiran..."; pesan.innerText = "";
 
@@ -131,7 +159,7 @@
             if (data.status === "success") {
               pesan.innerHTML = "✅ " + data.message; pesan.style.color = "#10b981";
               document.getElementById("formAbsen").reset();
-              ubahTeksFoto({files: []}); // Reset tombol foto
+              ubahTeksFoto(document.getElementById("foto")); // Reset tombol foto
             } else {
               pesan.innerHTML = "❌ Gagal: " + data.message; pesan.style.color = "#ef4444";
             }
