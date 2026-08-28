@@ -301,7 +301,7 @@
             fotoBase64: base64
           };
 
-          fetch(scriptURL, { method: 'POST', body: JSON.stringify(dataObj) })
+          fetch(scriptURL, { method: 'POST', redirect: 'follow', body: JSON.stringify(dataObj) })
           .then(response => response.json())
           .then(data => {
             if (data.status === "success") {
