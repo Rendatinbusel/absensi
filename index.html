@@ -23,7 +23,7 @@
       .card { 
         background: #ffffff; padding: 40px 30px; border-radius: 24px; width: 100%; max-width: 420px; 
         box-shadow: 0 20px 50px rgba(0,0,0,0.3); animation: fadeIn 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
-        position: relative; z-index: 1;
+        position: relative; z-index: 1; box-sizing: border-box;
       }
       @keyframes fadeIn { from { opacity: 0; transform: translateY(-30px) scale(0.9); } to { opacity: 1; transform: translateY(0) scale(1); } }
       
@@ -34,7 +34,17 @@
         margin-left: auto; margin-right: auto; box-shadow: 0 5px 15px rgba(245, 124, 0, 0.3);
       }
       h3 { text-align: center; color: #d32f2f; font-weight: 700; margin-top: 0; margin-bottom: 10px; font-size: 24px; }
-      .subtitle { text-align: center; color: #6b7280; font-size: 13px; margin-bottom: 30px; display: block; }
+      
+      /* --- PERBAIKAN TEKS INSTANSI --- */
+      .subtitle { 
+        text-align: center; 
+        color: #6b7280; 
+        font-size: clamp(11px, 3.5vw, 13px); /* Ukuran dinamis */
+        margin-bottom: 30px; 
+        display: block;
+        text-wrap: balance; /* Menyeimbangkan baris teks */
+        line-height: 1.4;
+      }
       
       .input-group { margin-bottom: 20px; }
       label { display: block; font-size: 13px; font-weight: 600; color: #4b5563; margin-bottom: 8px; margin-left: 5px; }
@@ -42,10 +52,16 @@
       .input-wrapper { position: relative; }
       .input-icon { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #f57c00; pointer-events: none; }
       
+      /* --- PERBAIKAN INPUT & SELECT AGAR TIDAK LEWAT BATAS --- */
       input[type="text"], input[type="number"], select { 
-        width: 100%; padding: 14px 15px 14px 45px; border: 1.5px solid #e5e7eb; border-radius: 12px; 
+        width: 100%; 
+        padding: 14px 35px 14px 45px; /* Padding kanan ditambah (35px) agar tidak menabrak panah */
+        border: 1.5px solid #e5e7eb; border-radius: 12px; 
         font-size: 14px; font-family: 'Poppins', sans-serif; box-sizing: border-box; background-color: #f9fafb;
         transition: all 0.3s ease;
+        text-overflow: ellipsis; /* Menambahkan titik-titik jika kepanjangan */
+        white-space: nowrap;     /* Mencegah teks turun ke baris baru */
+        overflow: hidden;        /* Menyembunyikan teks yang meluap */
       }
 
       select {
@@ -113,6 +129,13 @@
       .modal-box p { margin: 0 0 25px; color: #6b7280; font-size: 14px; line-height: 1.5; }
       .modal-btn { background: linear-gradient(135deg, #d32f2f 0%, #f57c00 100%); color: #fff; border: none; padding: 12px 30px; border-radius: 10px; font-family: 'Poppins', sans-serif; font-weight: 600; cursor: pointer; width: 100%; transition: 0.3s; }
       .modal-btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(211, 47, 47, 0.3); }
+
+      /* --- MEDIA QUERY UNTUK LAYAR HP KECIL --- */
+      @media (max-width: 480px) {
+        .card { padding: 30px 20px; }
+        h3 { font-size: 22px; }
+        input[type="text"], input[type="number"], select { font-size: 13px; }
+      }
     </style>
   </head>
   <body>
@@ -121,7 +144,7 @@
         <img src="https://www.kpu.go.id/images/1627539868logo-kpu.png" style="width: 65px; height: auto;" />
       </div>
       <h3>ABSENSI PEGAWAI WFH</h3>
-      <span class="subtitle">Komisi Pemilihan Umum Kabupaten Buton Selatan</span>
+      <span class="subtitle">Komisi Pemilihan Umum Kabupaten Buton&nbsp;Selatan</span>
       <form id="formAbsen" onsubmit="kirimData(event)">
         
         <div class="input-group">
@@ -144,7 +167,6 @@
           </div>
         </div>
         
-        <!-- BAGIAN JABATAN -->
         <div class="input-group">
           <label>Jabatan</label>
           <div class="input-wrapper">
@@ -162,7 +184,6 @@
               <option value="Penata Kelola Pemilu Ahli Pertama">Penata Kelola Pemilu Ahli Pertama</option>
               <option value="Penyusun Materi Hukum dan Perundang-Undangan">Penyusun Materi Hukum dan Perundang-Undangan</option>
               <option value="Penata Kelola Sistem dan Teknologi Informasi">Penata Kelola Sistem dan Teknologi Informasi</option>
-              <!-- JABATAN BARU DITAMBAHKAN DI SINI -->
               <option value="Pengolah Data dan Informasi">Pengolah Data dan Informasi</option>
               <option value="Pengelola Layanan Operasional">Pengelola Layanan Operasional</option>
               <option value="Pengadministrasi Perkantoran">Pengadministrasi Perkantoran</option>
@@ -204,7 +225,6 @@
       </form>
     </div>
 
-    <!-- Struktur Modal Pop-Up -->
     <div class="modal-overlay" id="popupModal">
       <div class="modal-box">
         <div class="modal-icon" id="modalIcon"></div>
