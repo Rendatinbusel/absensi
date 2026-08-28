@@ -3,149 +3,143 @@
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Absensi Online</title>
+    <title>Absensi Kehadiran</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
     <style>
-      body {
-        font-family: Arial, sans-serif;
-        background-color: #f4f7f6;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        min-height: 100vh;
-        margin: 0;
-        padding: 20px;
-        box-sizing: border-box;
+      body { 
+        font-family: 'Poppins', sans-serif; 
+        background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); 
+        margin: 0; min-height: 100vh; display: flex; align-items: center; justify-content: center; 
+        padding: 20px; box-sizing: border-box;
       }
-      .card {
-        background: #ffffff;
-        padding: 25px;
-        border-radius: 10px;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-        width: 100%;
-        max-width: 400px;
+      .card { 
+        background: #ffffff; padding: 35px 25px; border-radius: 20px; width: 100%; max-width: 400px; 
+        box-shadow: 0 15px 35px rgba(0,0,0,0.2); animation: fadeIn 0.6s ease-out;
       }
-      h2 {
-        text-align: center; color: #333; margin-bottom: 20px;
+      @keyframes fadeIn { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+      .header-icon { text-align: center; margin-bottom: 10px; }
+      h2 { text-align: center; color: #1f2937; font-weight: 600; margin-top: 0; margin-bottom: 25px; font-size: 22px; }
+      .input-group { margin-bottom: 20px; }
+      label { display: block; font-size: 14px; font-weight: 500; color: #4b5563; margin-bottom: 8px; }
+      input[type="text"], input[type="number"] { 
+        width: 100%; padding: 12px 15px; border: 1.5px solid #d1d5db; border-radius: 10px; 
+        font-size: 14px; font-family: 'Poppins', sans-serif; box-sizing: border-box; background-color: #f9fafb;
       }
-      .form-group { margin-bottom: 15px; }
-      label {
-        display: block; margin-bottom: 5px; font-weight: bold; color: #555;
+      input:focus { border-color: #4f46e5; outline: none; background-color: #fff; box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15); }
+      .file-upload-wrapper { position: relative; width: 100%; height: 60px; }
+      .file-upload-wrapper input[type="file"] { position: absolute; left: 0; top: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; z-index: 2; }
+      .custom-file-btn { 
+        position: absolute; left: 0; top: 0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; 
+        gap: 10px; background-color: #f3f4f6; border: 2px dashed #9ca3af; border-radius: 10px; color: #4b5563; font-weight: 500; font-size: 14px; z-index: 1;
       }
-      input {
-        width: 100%; padding: 10px; border: 1px solid #ccc;
-        border-radius: 5px; box-sizing: border-box; font-size: 14px;
+      .file-upload-wrapper input[type="file"]:hover + .custom-file-btn { background-color: #e0e7ff; border-color: #4f46e5; color: #4f46e5; }
+      button[type="submit"] { 
+        width: 100%; padding: 14px; background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); color: white; border: none; 
+        border-radius: 10px; font-size: 16px; font-weight: 600; font-family: 'Poppins', sans-serif; cursor: pointer; margin-top: 15px; 
       }
-      input[type="file"] { background: #f9f9f9; padding: 8px; }
-      button {
-        width: 100%; padding: 12px; background-color: #007bff; color: white;
-        border: none; border-radius: 5px; font-size: 16px; cursor: pointer; font-weight: bold; margin-top: 10px;
-      }
-      button:hover { background-color: #0056b3; }
-      button:disabled { background-color: #ccc; cursor: not-allowed; }
-      #status-msg { margin-top: 15px; text-align: center; font-weight: bold; }
+      button[type="submit"]:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(124, 58, 237, 0.4); }
+      button[type="submit"]:disabled { background: #9ca3af; cursor: not-allowed; transform: none; box-shadow: none; }
+      #pesan { text-align: center; margin-top: 20px; font-weight: 500; font-size: 14px; min-height: 20px; }
     </style>
   </head>
   <body>
     <div class="card">
-      <h2>Absensi Kehadiran</h2>
-      <form id="absensiForm" onsubmit="submitForm(event)">
-        <div class="form-group">
-          <label for="nama">Nama Lengkap:</label>
-          <input type="text" id="nama" required placeholder="Masukkan Nama...">
+      <div class="header-icon">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#4f46e5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle>
+        </svg>
+      </div>
+      <h2>Absensi Pegawai</h2>
+      
+      <form id="formAbsen" onsubmit="kirimData(event)">
+        <div class="input-group">
+          <label>Nama Lengkap</label>
+          <input type="text" id="nama" placeholder="Masukkan nama..." required>
         </div>
-        <div class="form-group">
-          <label for="nip">NIP:</label>
-          <input type="number" id="nip" required placeholder="Masukkan NIP...">
+        <div class="input-group">
+          <label>NIP</label>
+          <input type="number" id="nip" placeholder="Masukkan NIP..." required>
         </div>
-        <div class="form-group">
-          <label for="jabatan">Jabatan:</label>
-          <input type="text" id="jabatan" required placeholder="Masukkan Jabatan...">
+        <div class="input-group">
+          <label>Jabatan</label>
+          <input type="text" id="jabatan" placeholder="Masukkan jabatan..." required>
         </div>
-        <div class="form-group">
-          <label for="swafoto">Swafoto (Selfie):</label>
-          <input type="file" id="swafoto" accept="image/*" capture="user" required>
+        <div class="input-group">
+          <label>Swafoto (Selfie)</label>
+          <div class="file-upload-wrapper">
+            <input type="file" id="foto" accept="image/*" capture="user" required onchange="ubahTeksFoto(this)">
+            <div class="custom-file-btn" id="teks-tombol-foto">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle>
+              </svg>
+              <span>Ketuk untuk foto</span>
+            </div>
+          </div>
         </div>
-        <button type="submit" id="btnSubmit">Kirim Absensi</button>
+        <button type="submit" id="tombol">Kirim Absensi</button>
       </form>
-      <div id="status-msg"></div>
+      <div id="pesan"></div>
     </div>
 
     <script>
-      // GANTI URL DI BAWAH INI DENGAN URL WEB APP DARI GOOGLE APPS SCRIPT ANDA
-      const scriptURL = 'https://script.google.com/macros/s/AKfycbzxKcRk0oiK2UKX-g5t8Pehpz5acIlvIDaXZlZWAf1SM6A2qwl6q7x_bDa1hKeIonuX/exec';
+      // 🛑 PENTING 2: Masukkan URL Web App dari Apps Script Anda di sini!
+      const scriptURL = 'https://script.google.com/macros/s/AKfycbzQVKzVDrQWKeqKF6_C8YEc3SpFRok6025IzssOcrNoJJkSAAC-Urg0h53huFSTa20b/exec';
 
-      function compressImage(file, callback) {
-        var reader = new FileReader();
-        reader.readAsDataURL(file);
+      function ubahTeksFoto(input) {
+        var teksTombol = document.getElementById('teks-tombol-foto');
+        if (input.files && input.files[0]) {
+          teksTombol.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg><span style="color:#10b981;">Foto Siap!</span>`;
+          teksTombol.style.borderColor = "#10b981"; teksTombol.style.backgroundColor = "#ecfdf5";
+        }
+      }
+
+      function kompresGambar(file, callback) {
+        var reader = new FileReader(); reader.readAsDataURL(file);
         reader.onload = function(e) {
-          var img = new Image();
-          img.src = e.target.result;
+          var img = new Image(); img.src = e.target.result;
           img.onload = function() {
-            var canvas = document.createElement('canvas');
-            var ctx = canvas.getContext('2d');
-            var MAX_WIDTH = 800;
-            var MAX_HEIGHT = 800;
-            var width = img.width;
-            var height = img.height;
-
-            if (width > height) {
-              if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH; }
-            } else {
-              if (height > MAX_HEIGHT) { width *= MAX_HEIGHT / height; height = MAX_HEIGHT; }
-            }
-            canvas.width = width; canvas.height = height;
-            ctx.drawImage(img, 0, 0, width, height);
-            
-            var dataUrl = canvas.toDataURL('image/jpeg', 0.7);
-            callback(dataUrl);
+            var canvas = document.createElement('canvas'); var ctx = canvas.getContext('2d');
+            var maxWidth = 800; var maxHeight = 800; var width = img.width; var height = img.height;
+            if (width > height) { if (width > maxWidth) { height *= maxWidth / width; width = maxWidth; } } 
+            else { if (height > maxHeight) { width *= maxHeight / height; height = maxHeight; } }
+            canvas.width = width; canvas.height = height; ctx.drawImage(img, 0, 0, width, height);
+            callback(canvas.toDataURL('image/jpeg', 0.7));
           }
         }
       }
 
-      function submitForm(event) {
+      function kirimData(event) {
         event.preventDefault();
-        var btn = document.getElementById("btnSubmit");
-        var msg = document.getElementById("status-msg");
-        var fileInput = document.getElementById("swafoto");
-        var file = fileInput.files[0];
+        var tombol = document.getElementById("tombol");
+        var pesan = document.getElementById("pesan");
+        var fileFoto = document.getElementById("foto").files[0];
         
-        btn.disabled = true;
-        btn.innerText = "Mengunggah Data & Foto...";
-        msg.innerText = "";
-        
-        compressImage(file, function(base64Image) {
+        tombol.disabled = true; tombol.innerText = "Merekam Kehadiran..."; pesan.innerText = "";
+
+        kompresGambar(fileFoto, function(base64) {
           var dataObj = {
             nama: document.getElementById("nama").value,
             nip: document.getElementById("nip").value,
             jabatan: document.getElementById("jabatan").value,
-            fotoBase64: base64Image
+            fotoBase64: base64
           };
 
-          // Proses pengiriman data ke Google Apps Script via API
-          fetch(scriptURL, {
-            method: 'POST',
-            body: JSON.stringify(dataObj)
-            // Catatan: Tidak menggunakan header 'Content-Type' untuk menghindari error CORS (Preflight)
-          })
+          fetch(scriptURL, { method: 'POST', body: JSON.stringify(dataObj) })
           .then(response => response.json())
           .then(data => {
             if (data.status === "success") {
-              msg.innerText = data.message;
-              msg.style.color = "green";
-              document.getElementById("absensiForm").reset();
+              pesan.innerHTML = "✅ " + data.message; pesan.style.color = "#10b981";
+              document.getElementById("formAbsen").reset();
+              ubahTeksFoto({files: []}); // Reset tombol foto
             } else {
-              msg.innerText = "Gagal: " + data.message;
-              msg.style.color = "red";
+              pesan.innerHTML = "❌ Gagal: " + data.message; pesan.style.color = "#ef4444";
             }
-            btn.disabled = false;
-            btn.innerText = "Kirim Absensi";
+            tombol.disabled = false; tombol.innerText = "Kirim Absensi";
           })
           .catch(error => {
-            msg.innerText = "Terjadi kesalahan jaringan!";
-            msg.style.color = "red";
-            btn.disabled = false;
-            btn.innerText = "Kirim Absensi";
-            console.error('Error!', error.message);
+            pesan.innerHTML = "❌ Terjadi kesalahan jaringan!"; pesan.style.color = "#ef4444";
+            tombol.disabled = false; tombol.innerText = "Kirim Absensi";
           });
         });
       }
