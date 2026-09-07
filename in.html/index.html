@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SKM - KPU Buton Selatan</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --primary: #b91c1c; 
+      --secondary: #ea580c; 
+      --bg-gradient: linear-gradient(135deg, #b91c1c 0%, #ea580c 100%);
+      --input-bg: #f8fafc;
+      --input-border: #e2e8f0;
+      --text-main: #1e293b;
+      --text-muted: #64748b;
+    }
+
+    body { 
+      font-family: 'Poppins', sans-serif; 
+      background: var(--bg-gradient); 
+      margin: 0; 
+      min-height: 100vh; 
+      display: flex; 
+      align-items: center; 
+      justify-content: center; 
+      padding: 20px; 
+      box-sizing: border-box;
+      overflow-x: hidden;
+    }
+    
+    .blob {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(60px);
+      z-index: 0;
+      opacity: 0.4;
+      animation: float 8s ease-in-out infinite;
+    }
+    .blob-1 { top: -10%; left: -5%; width: 400px; height: 400px; background: #fca5a5; }
+    .blob-2 { bottom: -10%; right: -5%; width: 500px; height: 500px; background: #fdba74; animation-delay: 2s; }
+    .blob-3 { top: 40%; left: 60%; width: 300px; height: 300px; background: #fff; opacity: 0.2; animation-delay: 4s; }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0) scale(1); }
+      50% { transform: translateY(-30px) scale(1.05); }
+    }
+
+    .card { 
+      background: #ffffff; 
+      padding: 40px 30px; 
+      border-radius: 28px; 
+      width: 100%; 
+      max-width: 500px; /* Sedikit diperlebar agar kuesioner nyaman dibaca */
+      box-shadow: 0 25px 50px -12px rgba(0,0,0,0.35); 
+      animation: slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1); 
+      position: relative; 
+      z-index: 10; 
+      box-sizing: border-box;
+      border: 1px solid rgba(255,255,255,0.5);
+    }
+    @keyframes slideUp { 
+      from { opacity: 0; transform: translateY(40px) scale(0.95); } 
+      to { opacity: 1; transform: translateY(0) scale(1); } 
+    }
+    
+    .header-icon { 
+      text-align: center; 
+      margin-bottom: 20px; 
+      background: #ffffff; 
+      width: 90px; 
+      height: 90px; 
+      border-radius: 24px; 
+      display: flex; 
+      align-items: center; 
+      justify-content: center; 
+      margin-left: auto; 
+      margin-right: auto; 
+      box-shadow: 0 10px 25px rgba(185, 28, 28, 0.25), 0 0 0 8px rgba(255, 255, 255, 0.4);
+      transition: transform 0.3s ease;
+    }
+    
+    h3 { 
+      text-align: center; 
+      color: var(--primary); 
+      font-weight: 800; 
+      margin-top: 0; 
+      margin-bottom: 5px; 
+      font-size: 22px; 
+      letter-spacing: -0.5px;
+    }
+    
+    .subtitle { 
+      text-align: center; 
+      color: var(--text-muted); 
+      font-size: 13px; 
+      font-weight: 500;
+      margin-bottom: 20px; 
+      display: block;
+      line-height: 1.5;
+      padding-bottom: 20px;
+      border-bottom: 1px dashed #e2e8f0;
+    }
+
+    /* Form Pages */
+    .form-page { display: none; animation: fadeIn 0.4s ease; }
+    .form-page.active { display: block; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+    .page-indicator {
+      text-align: center; font-size: 12px; font-weight: 600; color: var(--primary);
+      margin-bottom: 20px; background: #fef2f2; padding: 6px 12px; border-radius: 20px;
+      display: inline-block; left: 50%; position: relative; transform: translateX(-50%);
+    }
+    
+    .input-group { margin-bottom: 18px; position: relative; }
+    label { 
+      display: block; font-size: 13px; font-weight: 600; color: var(--text-main); margin-bottom: 8px; margin-left: 5px; 
+    }
+    
+    .input-wrapper { position: relative; }
+    .input-icon { 
+      position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: #94a3b8; pointer-events: none; transition: color 0.3s ease;
+    }
+    
+    input[type="text"], input[type="number"], select { 
+      width: 100%; padding: 15px 40px 15px 45px; border: 1.5px solid var(--input-border); 
+      border-radius: 14px; font-size: 14px; font-family: 'Poppins', sans-serif; font-weight: 500;
+      box-sizing: border-box; background-color: var(--input-bg); transition: all 0.3s ease; color: var(--text-main);
+    }
+    select { appearance: none; -webkit-appearance: none; -moz-appearance: none; cursor: pointer; }
+    
+    .dropdown-arrow {
+      position: absolute; right: 18px; top: 50%; transform: translateY(-50%); pointer-events: none; color: #94a3b8;
+    }
+    
+    input:focus, select:focus { 
+      border-color: var(--primary); outline: none; background-color: #fff; box-shadow: 0 0 0 4px rgba(185, 28, 28, 0.1); 
+    }
+    input:focus ~ .input-icon, select:focus ~ .input-icon { color: var(--primary); }
+
+    /* Custom Radio Buttons for Selection & Survey */
+    .radio-card-wrapper {
+      display: flex; flex-direction: column; gap: 10px; margin-bottom: 15px;
+    }
+    .radio-card {
+      display: flex; align-items: center; padding: 14px 16px; border: 1.5px solid var(--input-border);
+      border-radius: 14px; background: var(--input-bg); cursor: pointer; transition: all 0.2s ease;
+    }
+    .radio-card:hover { border-color: #fca5a5; background: #fef2f2; }
+    .radio-card input[type="radio"] { 
+      margin: 0 12px 0 0; width: 18px; height: 18px; accent-color: var(--primary); cursor: pointer;
+    }
+    .radio-label { font-size: 14px; font-weight: 500; color: var(--text-main); cursor: pointer; width: 100%; }
+    
+    /* Survey Question Text */
+    .survey-q { font-size: 14px; font-weight: 600; color: var(--text-main); margin: 25px 0 10px 0; line-height: 1.5;}
+    
+    /* Navigation Buttons */
+    .btn-group { display: flex; gap: 10px; margin-top: 25px; }
+    button { 
+      padding: 16px; border: none; border-radius: 14px; font-size: 15px; font-weight: 700; 
+      font-family: 'Poppins', sans-serif; cursor: pointer; transition: all 0.3s ease; 
+      display: flex; align-items: center; justify-content: center; gap: 8px; flex: 1;
+    }
+    .btn-primary { 
+      background: var(--bg-gradient); color: white; box-shadow: 0 10px 20px -5px rgba(185, 28, 28, 0.5);
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 25px -5px rgba(185, 28, 28, 0.6); }
+    .btn-secondary { background: #f1f5f9; color: var(--text-main); border: 1.5px solid #cbd5e1; }
+    .btn-secondary:hover { background: #e2e8f0; }
+
+    /* Modal (Tersimpan dari template) */
+    .modal-overlay {
+      display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(8px); z-index: 9999;
+      justify-content: center; align-items: center; animation: fadeBg 0.3s ease;
+    }
+    .modal-overlay.active { display: flex; }
+    .modal-box { background: #fff; padding: 35px 30px; border-radius: 24px; width: 90%; max-width: 360px; text-align: center;}
+    .modal-icon { width: 80px; height: 80px; border-radius: 50%; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; }
+    .modal-icon.success { background: #d1fae5; color: #059669; }
+    .modal-box h3 { margin: 0 0 10px; color: var(--text-main); font-size: 22px; font-weight: 700; }
+    .modal-btn { background: var(--bg-gradient); color: #fff; padding: 14px 30px; border-radius: 12px; font-weight: 600; cursor: pointer; width: 100%; border: none;}
+  </style>
+</head>
+<body>
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="blob blob-3"></div>
+
+  <div class="card">
+    <div class="header-icon">
+      <img src="https://www.kpu.go.id/images/1627539868logo-kpu.png" style="width: 60px; height: auto;" alt="Logo KPU" />
+    </div>
+    <h3>SURVEI KEPUASAN MASYARAKAT</h3>
+    <span class="subtitle">Komisi Pemilihan Umum Kabupaten Buton Selatan</span>
+    
+    <form id="formSurvey" onsubmit="kirimData(event)">
+      
+      <!-- HALAMAN 1: Pilihan Layanan -->
+      <div id="page1" class="form-page active">
+        <div class="page-indicator">Halaman 1 dari 3</div>
+        <div class="input-group">
+          <label>Pilih Layanan (Hanya 1)</label>
+          <div class="radio-card-wrapper">
+            <label class="radio-card">
+              <input type="radio" name="jenis_layanan" value="Layanan PPID" required>
+              <span class="radio-label">1. Layanan PPID</span>
+            </label>
+            <label class="radio-card">
+              <input type="radio" name="jenis_layanan" value="Layanan Pendidikan Pemilih">
+              <span class="radio-label">2. Layanan Pendidikan Pemilih</span>
+            </label>
+            <label class="radio-card">
+              <input type="radio" name="jenis_layanan" value="Layanan kerja sama">
+              <span class="radio-label">3. Layanan kerja sama</span>
+            </label>
+            <label class="radio-card">
+              <input type="radio" name="jenis_layanan" value="Layanan pengaduan masyarakat">
+              <span class="radio-label">4. Layanan pengaduan masyarakat</span>
+            </label>
+          </div>
+        </div>
+        <div class="btn-group">
+          <button type="button" class="btn-primary" onclick="nextPage(1)">Lanjut <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg></button>
+        </div>
+      </div>
+
+      <!-- HALAMAN 2: Profil Responden -->
+      <div id="page2" class="form-page">
+        <div class="page-indicator">Halaman 2 dari 3</div>
+        
+        <div class="input-group">
+          <label>Jenis Kelamin</label>
+          <div class="input-wrapper">
+            <div class="input-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></div>
+            <select name="jenis_kelamin" id="jk" required>
+              <option value="" disabled selected hidden>Pilih jenis kelamin...</option>
+              <option value="Laki-laki">Laki-laki</option>
+              <option value="Perempuan">Perempuan</option>
+            </select>
+            <div class="dropdown-arrow"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg></div>
+          </div>
+        </div>
+
+        <div class="input-group">
+          <label>Usia</label>
+          <div class="input-wrapper">
+            <div class="input-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg></div>
+            <select name="usia" id="usia" required>
+              <option value="" disabled selected hidden>Pilih rentang usia...</option>
+              <option value="< 17 tahun">< 17 tahun</option>
+              <option value="17-25 tahun">17-25 tahun</option>
+              <option value="26-34 tahun">26-34 tahun</option>
+              <option value="35-44 tahun">35-44 tahun</option>
+              <option value="45-54 tahun">45-54 tahun</option>
+              <option value="55-65 tahun">55-65 tahun</option>
+              <option value="> 65 tahun">> 65 tahun</option>
+            </select>
+            <div class="dropdown-arrow"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg></div>
+          </div>
+        </div>
+
+        <div class="input-group">
+          <label>Pendidikan Terakhir</label>
+          <div class="input-wrapper">
+            <div class="input-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"></path><path d="M6 12v5c3 3 9 3 12 0v-5"></path></svg></div>
+            <select name="pendidikan" required>
+              <option value="" disabled selected hidden>Pilih pendidikan...</option>
+              <option value="Tidak sekolah">Tidak sekolah</option>
+              <option value="SD/Sederajat">SD/Sederajat</option>
+              <option value="SMP/Sederajat">SMP/Sederajat</option>
+              <option value="SMA/Sederajat">SMA/Sederajat</option>
+              <option value="D1/D2/D3">D1/D2/D3</option>
+              <option value="D4/S1">D4/S1</option>
+              <option value="S2">S2</option>
+              <option value="S3">S3</option>
+            </select>
+            <div class="dropdown-arrow"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg></div>
+          </div>
+        </div>
+
+        <div class="input-group">
+          <label>Pekerjaan</label>
+          <div class="input-wrapper">
+            <div class="input-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg></div>
+            <select name="pekerjaan" required>
+              <option value="" disabled selected hidden>Pilih pekerjaan...</option>
+              <option value="ASN">ASN</option>
+              <option value="TNI">TNI</option>
+              <option value="POLRI">POLRI</option>
+              <option value="Swasta">Swasta</option>
+              <option value="Wirausaha">Wirausaha</option>
+              <option value="Ibu Rumah Tangga">Ibu Rumah Tangga</option>
+              <option value="Pelajar/Mahasiswa">Pelajar/Mahasiswa</option>
+              <option value="Petani/Nelayan">Petani/Nelayan</option>
+              <option value="Pekerja Lepas/Freelance">Pekerja Lepas/Freelance</option>
+              <option value="Pensiunan">Pensiunan</option>
+              <option value="Lainnya">Lainnya</option>
+            </select>
+            <div class="dropdown-arrow"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg></div>
+          </div>
+        </div>
+
+        <div class="input-group">
+          <label>Apakah Anda penyandang disabilitas / pendamping?</label>
+          <div class="input-wrapper">
+            <div class="input-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg></div>
+            <select name="is_disabilitas" id="is_disabilitas" required onchange="toggleDisabilitas()">
+              <option value="" disabled selected hidden>Pilih status...</option>
+              <option value="Ya">Ya</option>
+              <option value="Tidak">Tidak</option>
+            </select>
+            <div class="dropdown-arrow"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg></div>
+          </div>
+        </div>
+
+        <div class="input-group" id="divJenisDisabilitas" style="display: none;">
+          <label>Jika ya, jenis disabilitas apa yang Anda miliki/dampingi?</label>
+          <div class="input-wrapper">
+            <div class="input-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg></div>
+            <select name="jenis_disabilitas" id="jenis_disabilitas">
+              <option value="" disabled selected hidden>Pilih jenis disabilitas...</option>
+              <option value="Disabilitas Fisik">Disabilitas Fisik</option>
+              <option value="Disabilitas Intelektual">Disabilitas Intelektual</option>
+              <option value="Disabilitas Mental">Disabilitas Mental</option>
+              <option value="Disabilitas Sensorik">Disabilitas Sensorik</option>
+            </select>
+            <div class="dropdown-arrow"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg></div>
+          </div>
+        </div>
+
+        <div class="btn-group">
+          <button type="button" class="btn-secondary" onclick="prevPage(2)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg> Kembali</button>
+          <button type="button" class="btn-primary" onclick="nextPage(2)">Lanjut <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg></button>
+        </div>
+      </div>
+
+      <!-- HALAMAN 3: Pertanyaan Survei -->
+      <div id="page3" class="form-page">
+        <div class="page-indicator">Halaman 3 dari 3</div>
+
+        <!-- Render script pertanyaan menggunakan struktur seragam -->
+        <script>
+          const questions = [
+            { id: 1, text: "Informasi pelayanan tersedia melalui media elektronik maupun nonelektronik", type: "setuju" },
+            { id: 2, text: "Kesesuaian persyaratan dengan informasi yang diberikan", type: "sesuai" },
+            { id: 3, text: "Standar dan prosedur layanan diinformasikan dengan jelas", type: "setuju" },
+            { id: 4, text: "Prosedur/Alur layanan mudah dipahami dan dilakukan", type: "setuju" },
+            { id: 5, text: "Layanan diberikan sesuai prosedur tanpa kecurangan", type: "setuju" },
+            { id: 6, text: "Jangka waktu layanan sesuai dengan yang diinformasikan", type: "sesuai" },
+            { id: 7, text: "Biaya layanan sesuai dengan yang diinformasikan", type: "sesuai" },
+            { id: 8, text: "Tidak ada pungutan liar (pungli) dalam pelayanan", type: "setuju" },
+            { id: 9, text: "Tidak ada percaloan/perantara tidak resmi dalam pelayanan", type: "setuju" },
+            { id: 10, text: "Produk layanan yang diterima sesuai dengan yang dipublikasikan", type: "sesuai" },
+            { id: 11, text: "Aplikasi sistem pelayanan merespon kebutuhan dengan cepat (membuka halaman, konten, pencarian informasi, unduh/unggah)", type: "setuju" },
+            { id: 12, text: "Fitur pada aplikasi sistem layanan mudah digunakan", type: "setuju" },
+            { id: 13, text: "Seluruh pengguna layanan dilayani secara adil tanpa diskriminasi", type: "setuju" },
+            { id: 14, text: "Pelayanan diberikan tanpa imbalan uang, barang, atau fasilitas di luar aturan", type: "setuju" },
+            { id: 15, text: "Layanan konsultasi dan pengaduan mudah diakses", type: "setuju" },
+            { id: 16, text: "Sistem layanan online nyaman dan mudah digunakan", type: "setuju" }
+          ];
+
+          const optsSetuju = ["a. Sangat tidak setuju", "b. Tidak setuju", "c. Setuju", "d. Sangat setuju"];
+          const optsSesuai = ["a. Sangat tidak sesuai", "b. Tidak sesuai", "c. Sesuai", "d. Sangat sesuai"];
+
+          questions.forEach(q => {
+            let opts = q.type === "setuju" ? optsSetuju : optsSesuai;
+            document.write(`
+              <div class="survey-q">${q.id}. ${q.text}</div>
+              <div class="radio-card-wrapper">
+                ${opts.map(opt => `
+                  <label class="radio-card">
+                    <input type="radio" name="q${q.id}" value="${opt}" required>
+                    <span class="radio-label">${opt}</span>
+                  </label>
+                `).join('')}
+              </div>
+            `);
+          });
+        </script>
+
+        <div class="btn-group">
+          <button type="button" class="btn-secondary" onclick="prevPage(3)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg> Kembali</button>
+          <button type="submit" class="btn-primary" id="tombol">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" id="btn-icon"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+            <span id="btn-text">Kirim Survei</span>
+          </button>
+        </div>
+      </div>
+      
+    </form>
+  </div>
+
+  <div class="modal-overlay" id="popupModal">
+    <div class="modal-box">
+      <div class="modal-icon success" id="modalIcon">
+        <svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      </div>
+      <h3>Berhasil!</h3>
+      <p>Terima kasih telah berpartisipasi dalam survei layanan ini.</p>
+      <button class="modal-btn" onclick="tutupModal()">Tutup</button>
+    </div>
+  </div>
+
+  <script>
+    function toggleDisabilitas() {
+      const isDis = document.getElementById('is_disabilitas').value;
+      const divJenis = document.getElementById('divJenisDisabilitas');
+      const inputJenis = document.getElementById('jenis_disabilitas');
+      
+      if (isDis === 'Ya') {
+        divJenis.style.display = 'block';
+        inputJenis.required = true;
+      } else {
+        divJenis.style.display = 'none';
+        inputJenis.required = false;
+        inputJenis.value = '';
+      }
+    }
+
+    // Validasi HTML bawaan (required) sebelum pindah page
+    function validatePage(pageId) {
+      const page = document.getElementById(pageId);
+      const inputs = page.querySelectorAll('input[required], select[required]');
+      
+      // Khusus radio buttons, kita perlu cek berdasarkan 'name'
+      let valid = true;
+      let checkedRadios = {};
+
+      inputs.forEach(input => {
+        if (input.type === 'radio') {
+          if (!checkedRadios[input.name]) {
+             const radios = page.querySelectorAll(`input[name="${input.name}"]:checked`);
+             if (radios.length === 0) {
+               valid = false;
+               input.reportValidity(); // Menampilkan pop up "Please fill out this field"
+             }
+             checkedRadios[input.name] = true;
+          }
+        } else {
+          if (!input.value) {
+            valid = false;
+            input.reportValidity();
+          }
+        }
+      });
+      return valid;
+    }
+
+    function nextPage(currentPage) {
+      if (!validatePage('page' + currentPage)) return;
+      
+      document.getElementById('page' + currentPage).classList.remove('active');
+      document.getElementById('page' + (currentPage + 1)).classList.add('active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function prevPage(currentPage) {
+      document.getElementById('page' + currentPage).classList.remove('active');
+      document.getElementById('page' + (currentPage - 1)).classList.add('active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function tutupModal() {
+      document.getElementById('popupModal').classList.remove('active');
+      location.reload(); // Refresh halaman setelah sukses
+    }
+
+function kirimData(event) {
+      event.preventDefault();
+      
+      var tombol = document.getElementById("tombol");
+      var btnText = document.getElementById("btn-text");
+      
+      tombol.disabled = true; 
+      btnText.innerText = "Mengirim..."; 
+      
+      // Mengambil seluruh data dari form
+      var form = document.getElementById("formSurvey");
+      var formData = new FormData(form);
+      var dataObj = Object.fromEntries(formData.entries());
+
+      // PASTE URL GOOGLE SCRIPT ANDA DI BAWAH INI
+      var scriptURL = 'MASUKKAN_URL_WEB_APP_ANDA_DISINI';
+
+      fetch(scriptURL, { 
+        method: 'POST', 
+        body: JSON.stringify(dataObj) 
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.status === "success") {
+          document.getElementById('popupModal').classList.add('active');
+          form.reset(); // Mengosongkan form setelah berhasil
+        } else {
+          alert("Terjadi kesalahan: " + data.message);
+        }
+        tombol.disabled = false; 
+        btnText.innerText = "Kirim Survei";
+      })
+      .catch(error => {
+        alert("Gagal mengirim data. Pastikan koneksi internet stabil.");
+        tombol.disabled = false; 
+        btnText.innerText = "Kirim Survei";
+      });
+    }
+  </script>
+</body>
+</html>
